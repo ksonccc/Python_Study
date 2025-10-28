@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 1",
+	"properties": {
+		"content": {
+			"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://testjinhostorage001.blob.core.windows.net/taxi/01/2020_Yellow_Taxi_Trip_Data.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n    ) AS [result]\n\n\n\nIF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseDelimitedTextFormat')\n    CREATE EXTERNAL FILE FORMAT [SynapseDelimitedTextFormat]\n    WITH ( FORMAT_TYPE = DELIMITEDTEXT ,\n           FORMAT_OPTIONS (\n             FIELD_TERMINATOR = ',',\n             FIRST_ROW = 2,\n             USE_TYPE_DEFAULT = FALSE\n            ))\nGO\n\n\n    CREATE EXTERNAL DATA SOURCE [test-con_strgms000001_dfs_core_windows_net]\n    WITH (\n        LOCATION = 'https://taxi@testjinhostorage001.blob.core.windows.net'\n    )\nGO\n\nCREATE EXTERNAL TABLE dbo.ext_test (\n    [VendorID] bigint,\n    [tpep_pickup_datetime] nvarchar(100),\n    [tpep_dropoff_datetime] nvarchar(100),\n    [passenger_count] bigint,\n    [trip_distance] float,\n    [RatecodeID] bigint,\n    [store_and_fwd_flag] nvarchar(100),\n    [PULocationID] bigint,\n    [DOLocationID] bigint,\n    [payment_type] bigint,\n    [fare_amount] float,\n    [extra] float,\n    [mta_tax] float,\n    [tip_amount] float,\n    [tolls_amount] float,\n    [improvement_surcharge] float,\n    [total_amount] float,\n    [congestion_surcharge] float\n    )\n    WITH (\n    LOCATION = '01/2020_Yellow_Taxi_Trip_Data.csv',\n    DATA_SOURCE = [test-con_strgms000001_dfs_core_windows_net],\n    FILE_FORMAT = [SynapseDelimitedTextFormat]\n    )\nGO\n\n\nSELECT TOP 100 * FROM dbo.ext_test\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "svlss",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
